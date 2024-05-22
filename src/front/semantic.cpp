@@ -576,6 +576,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, vector<Instruction *> &ins
         switch (type)
         {
         case ir::Type::Int:
+        std::cout <<"analysisVarDef-整数数组"<< std::endl;
             // alloc:内存分配，op1:数组长度，op2:不使用，des:数组名，数组名被视为一个指针。
             instructions.push_back(new Instruction({std::to_string(size), ir::Type::IntLiteral},
                                                    {},
@@ -593,6 +594,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, vector<Instruction *> &ins
             }
             break;
         case ir::Type::Float:
+        std::cout <<"analysisVarDef-浮点数数组"<< std::endl;
             // alloc:内存分配，op1:数组长度，op2:不使用，des:数组名，数组名被视为一个指针。
             instructions.push_back(new Instruction({std::to_string(size), ir::Type::IntLiteral},
                                                    {},
@@ -622,11 +624,11 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, vector<Instruction *> &ins
 
         if (curr_type == ir::Type::Int && !dimension.empty()){
             curr_type = ir::Type::IntPtr;
-            std::cout<<"change_curr_type:Int"<<std::endl;
+            std::cout<<"analysisVarDef-change_curr_type:Int->IntPtr"<<std::endl;
         }
         else if (curr_type == ir::Type::Float && !dimension.empty()){
             curr_type = ir::Type::FloatPtr;
-            std::cout<<"change_curr_type:Float"<<std::endl;
+            std::cout<<"analysisVarDef-change_curr_type:Float->FloatPtr"<<std::endl;
         }
         
     if (NODE_IS(INITVAL, root->children.size() - 1)) // 如果有初始化值
@@ -640,7 +642,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, vector<Instruction *> &ins
     }
 
     symbol_table.add_operand(ident->token.value,
-                             {Operand(root->arr_name, type),
+                             {Operand(root->arr_name, curr_type),
                               dimension});
 }
 
@@ -2540,7 +2542,7 @@ void frontend::Analyzer::analysisNumber(Number *root, vector<Instruction *> &ins
         break;
     case TokenType::FLOATLTR: // 浮点数常量
        root->t = Type::FloatLiteral;
-         std::cout<<"analysisNumber-TokenType::FloatLiteral:"<<std::endl;
+         std::cout<<"analysisNumber-TokenType::FLOATLTR:"<<std::endl;
         root->v = term->token.value;
         break;
     default:
