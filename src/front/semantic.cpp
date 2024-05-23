@@ -406,45 +406,7 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, vector<Instruc
         root->v = constexp->v;
         root->t = constexp->t;
         delete_temp_name();
-        // // ConstInitVal
-        // int cnt = 0;
-        // for (int i=1; i<root->children.size()-1; i+=2, cnt+=1){
-        //     // ConstInitVal
-        //     ConstInitVal* child_constinit = dynamic_cast<ConstInitVal*>(root->children[i]);
-        //     assert(child_constinit != nullptr);
-        //     // ConstExp
-        //     ConstExp* constexp = dynamic_cast<ConstExp*>(child_constinit->children[0]);
-        //     assert(constexp != nullptr);
-        //     // 计算ConstExp的值
-        //     analysisConstExp(constexp, instructions);
-        //     if (curr_type == ir::Type::IntPtr){
-        //         // 允许隐式类型转化 Float -> Int
-        //         assert(constexp->t == ir::Type::FloatLiteral || constexp->t == ir::Type::IntLiteral);
-        //         int val;
-        //         if (constexp->t == ir::Type::Float){
-        //             val = std::stof(constexp->v);
-        //         }
-        //         else{
-        //             val = std::stoi(constexp->v);
-        //         }
-        //         ir::Instruction* storeInst = new ir::Instruction(ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::IntPtr),
-        //                                                         ir::Operand(std::to_string(cnt),ir::Type::IntLiteral),
-        //                                                         ir::Operand(std::to_string(val),ir::Type::IntLiteral),ir::Operator::store);
-        //         instructions.push_back(storeInst);
-        //     }
-        //     else if (curr_type == ir::Type::FloatPtr){
-        //         // 允许类型提升 Int -> Float
-        //         assert(constexp->t == ir::Type::FloatLiteral || constexp->t == ir::Type::IntLiteral);
-        //         float val = std::stof(constexp->v);
-        //         ir::Instruction* storeInst = new ir::Instruction(ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::FloatPtr),
-        //                                                         ir::Operand(std::to_string(cnt),ir::Type::IntLiteral),
-        //                                                         ir::Operand(std::to_string(val),ir::Type::FloatLiteral),ir::Operator::store);
-        //         instructions.push_back(storeInst);
-        //     }
-        //     else{
-        //         assert(0 && "Invalid analyze Type");
-        //     }
-        // }
+
     }
     else
     {
@@ -465,14 +427,14 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, vector<Instruc
                     instructions.push_back(new Instruction({root->v, ir::Type::IntPtr},
                                                            {std::to_string(insert_index), ir::Type::IntLiteral},
                                                            {constinitval->v, ir::Type::IntLiteral},
-                                                           Operator::store));
+                                                           Operator::store));std::cout << "store-430:" << std::endl;
                     break;
                 case ir::Type::Float:
                     // store:存储，op1:数组名，op2:下标，des:存入的数
                     instructions.push_back(new Instruction({root->v, ir::Type::FloatPtr},
                                                            {std::to_string(insert_index), ir::Type::IntLiteral},
                                                            {constinitval->v, ir::Type::FloatLiteral},
-                                                           Operator::store));
+                                                           Operator::store));std::cout << "store-437:" << std::endl;
                     break;
                 default:
                     break;
@@ -592,7 +554,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, vector<Instruction *> &ins
                 instructions.push_back(new Instruction({root->arr_name, ir::Type::IntPtr},
                                                        {std::to_string(insert_index), ir::Type::IntLiteral},
                                                        {"0", ir::Type::IntLiteral},
-                                                       Operator::store));
+                                                       Operator::store));std::cout << "store-557:" << std::endl;
             }
             break;
         case ir::Type::Float:
@@ -610,7 +572,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, vector<Instruction *> &ins
                 instructions.push_back(new Instruction({root->arr_name, ir::Type::FloatPtr},
                                                        {std::to_string(insert_index), ir::Type::IntLiteral},
                                                        {"0.0", ir::Type::FloatLiteral},
-                                                       Operator::store));
+                                                       Operator::store));std::cout << "store-575:" << std::endl;
             }
             break;
         default:
@@ -774,7 +736,7 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, vector<Instruction *> &i
                 instructions.push_back(new Instruction({root->v, root->t},
                                                        {std::to_string(insert_index), ir::Type::IntLiteral},
                                                        {initval->v, initval->t},
-                                                       Operator::store));
+                                                       Operator::store));std::cout << "store-739:" << std::endl;
                 insert_index += 1;
                 delete_temp_name();
             } else {
@@ -946,13 +908,112 @@ void frontend::Analyzer::analysisStmt(Stmt *root, std::vector<Instruction *> &in
     if (NODE_IS(LVAL, 0)) // 如果是赋值语句
     {std::cout<<"analysisStmt -赋值语句"<<std::endl;
         GET_CHILD_PTR(exp, Exp, 2);
+         if (exp->t == ir::Type::Float){
+        std::cout<<"analysisStmt-exp->t = ir::Type::Float;"<<std::endl;
+        }
+        else if (exp->t == ir::Type::Int)
+        {
+        std::cout<<"analysisStmt-exp->t = ir::Type::Int;"<<std::endl;
+        }else if (exp->t == ir::Type::IntLiteral)
+        {
+        std::cout<<"analysisStmt-exp->t = ir::Type::IntLiteral;"<<std::endl;
+        }else if (exp->t == ir::Type::FloatLiteral )
+        {
+        std::cout<<"analysisStmt-exp->t = ir::Type::FloatLiteral;"<<std::endl;
+        }else if (exp->t == ir::Type::null )
+        {
+        std::cout<<"analysisStmt-exp->t = ir::Type::null;"<<std::endl;
+        }
+
+
         exp->v = get_temp_name();
-        exp->t = ir::Type::Int; // 初始化为int
+        // exp->t = ir::Type::Int; // 初始化为int
         // 获取右值
         analysisExp(exp, instructions);
 
         GET_CHILD_PTR(lval, LVal, 0);
+         string var_name = (dynamic_cast<Term*>(lval->children[0]))->token.value;
+    // auto ident_ste = symbol_table.get_ste(ident->token.value);
+        STE ident_ste = symbol_table.get_ste(var_name);
+        std::cout << "analysisStmt-ident_ste.operand.type  " << toString(ident_ste.operand.type ) << " "<< ident_ste.operand.name << std::endl;
+        
+//---------------------------要进行类型转换
 
+        if (ident_ste.operand.type == ir::Type::IntLiteral)std::cout<<"analysisStmt-ident_ste.operand.type:IntLiteral"<<std::endl;
+        if (ident_ste.operand.type == ir::Type::FloatLiteral)std::cout<<"analysisStmt-ident_ste.operand.type:FloatLiteral"<<std::endl;
+        if (ident_ste.operand.type == ir::Type::Int)std::cout<<"analysisStmt-ident_ste.operand.type:Int"<<std::endl;
+        if (ident_ste.operand.type == ir::Type::Float)std::cout<<"analysisStmt-ident_ste.operand.type:Float"<<std::endl;
+        if (ident_ste.operand.type == ir::Type::IntPtr)std::cout<<"analysisStmt-ident_ste.operand.typeIntPtr"<<std::endl;
+        if (ident_ste.operand.type == ir::Type::FloatPtr)std::cout<<"analysisStmt-ident_ste.operand.type:FloatPtr"<<std::endl;
+       if (lval->children.size() == 1){
+            // Float/Int/FloatLiteral/IntLiteral -> Int
+            if (ident_ste.operand.type == Type::Int){
+                if (exp->t == Type::Int){
+                    ir::Instruction* movInst = new ir::Instruction(ir::Operand(exp->v,ir::Type::Int),
+                                                                   ir::Operand(),
+                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Int),ir::Operator::mov);
+                    instructions.push_back(movInst);
+                }
+                else if (exp->t == Type::IntLiteral){
+                    ir::Instruction* movInst = new ir::Instruction(ir::Operand(exp->v,ir::Type::IntLiteral),
+                                                                   ir::Operand(),
+                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Int),ir::Operator::mov);
+                    instructions.push_back(movInst);
+                }
+                else if (exp->t == Type::Float){
+                    ir::Instruction* f2iInst = new ir::Instruction(ir::Operand(exp->v,ir::Type::Float),
+                                                                   ir::Operand(),
+                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Int),ir::Operator::cvt_f2i);
+                    instructions.push_back(f2iInst);
+                }
+                else if (exp->t == Type::FloatLiteral){
+                    int val = std::stof(exp->v);
+                    ir::Instruction* movInst = new ir::Instruction(ir::Operand(std::to_string(val),ir::Type::IntLiteral),
+                                                                   ir::Operand(),
+                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Int),ir::Operator::mov);
+                    instructions.push_back(movInst);
+                }
+            }else if(ident_ste.operand.type == Type::IntPtr){
+                std::cout << "analysisStmt-exp类型转换成IntPtr " <<std::endl;  
+                exp->t == Type::IntPtr;
+
+            }else if(ident_ste.operand.type == Type::FloatPtr){
+                std::cout << "analysisStmt-exp类型转换成FloatPtr " <<std::endl;  
+                exp->t == Type::FloatPtr;
+
+            }
+            // Float/Int/FloatLiteral/IntLiteral -> Float
+            else if (ident_ste.operand.type == Type::Float){   
+                std::cout << "analysisStmt-exp类型转换成Float " <<std::endl;             
+                if (exp->t == Type::Int){
+                    ir::Instruction* i2fInst = new ir::Instruction(ir::Operand(exp->v,ir::Type::Int),
+                                                                   ir::Operand(),
+                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Float),ir::Operator::cvt_i2f);
+                    instructions.push_back(i2fInst);
+                }
+                else if (exp->t == Type::IntLiteral){
+                    float val = std::stoi(exp->v);
+                    ir::Instruction* movInst = new ir::Instruction(ir::Operand(std::to_string(val),ir::Type::FloatLiteral),
+                                                                   ir::Operand(),
+                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Float),ir::Operator::fmov);
+                    instructions.push_back(movInst);
+                }
+                else if (exp->t == Type::Float){
+                    ir::Instruction* movInst = new ir::Instruction(ir::Operand(exp->v,ir::Type::Float),
+                                                                   ir::Operand(),
+                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Float),ir::Operator::fmov);
+                    instructions.push_back(movInst);
+                }
+                else if (exp->t == Type::FloatLiteral){
+                    ir::Instruction* movInst = new ir::Instruction(ir::Operand(exp->v,ir::Type::FloatLiteral),
+                                                                   ir::Operand(),
+                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Float),ir::Operator::fmov);
+                    instructions.push_back(movInst);
+                }
+            }
+            else
+                assert(0 && "Error Type");
+        }
 
         
         // 获取左值
@@ -1528,8 +1589,23 @@ void frontend::Analyzer::analysisRelExp(RelExp *root, vector<Instruction *> &ins
 // Exp.t
 void frontend::Analyzer::analysisExp(Exp *root, vector<Instruction *> &instructions)
 {
-     std::cout<<"analysisExp "<<std::endl;
-    GET_CHILD_PTR(addexp, AddExp, 0);
+         std::cout<<"analysisExp "<<std::endl;
+
+        GET_CHILD_PTR(addexp, AddExp, 0);
+         std::cout<<"analysisExp0-analysisAddExp->v:"<<addexp->v<<std::endl;
+        if (addexp->t == ir::Type::Float){
+        std::cout<<"analysisExp0-analysisAddExp-->t = ir::Type::Float;"<<std::endl;
+        }
+        else if (addexp->t == ir::Type::Int)
+        {
+        std::cout<<"analysisExp0-analysisAddExp-->t = ir::Type::Int;"<<std::endl;
+        }else if (addexp->t == ir::Type::IntLiteral)
+        {
+        std::cout<<"analysisExp0-analysisAddExp-->t = ir::Type::IntLiteral;"<<std::endl;
+        }else if (addexp->t == ir::Type::FloatLiteral )
+        {
+        std::cout<<"analysisExp0-analysisAddExp-->t = ir::Type::FloatLiteral;"<<std::endl;
+        }
     COPY_EXP_NODE(root, addexp);
     analysisAddExp(addexp, instructions);
     std::cout<<"analysisExp-analysisAddExp->v:"<<addexp->v<<std::endl;
@@ -1557,7 +1633,7 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, std::vector<Instruction *>
 {
     std::cout<<"analysisAddExp "<<std::endl;
 
-           if (root->t == ir::Type::Float){
+        if (root->t == ir::Type::Float){
         std::cout<<"analysisAddExp-root->t = ir::Type::Float;"<<std::endl;
         }
         else if (root->t == ir::Type::Int)
@@ -1659,7 +1735,7 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, std::vector<Instruction *>
             instructions.push_back(new Instruction({root->v, ir::Type::Int},
                                                    {temp_name, ir::Type::Int},
                                                    {temp_name, ir::Type::Int},
-                                                   Operator::add));
+                                                   Operator::add));std::cout << "add-1662" << std::endl;
         } else {
             instructions.push_back(new Instruction({root->v, ir::Type::Int},
                                                    {temp_name, ir::Type::Int},
@@ -1695,7 +1771,7 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, std::vector<Instruction *>
                 instructions.push_back(new Instruction({root->v, ir::Type::IntLiteral},
                                                        {temp_name, ir::Type::Int},
                                                        {temp_name, ir::Type::Int},
-                                                       Operator::add));
+                                                       Operator::add));std::cout << "add-1698" << std::endl;
             } else {
                 instructions.push_back(new Instruction({root->v, ir::Type::IntLiteral},
                                                        {temp_name, ir::Type::Int},
@@ -1729,7 +1805,7 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, std::vector<Instruction *>
             instructions.push_back(new Instruction({root->v, ir::Type::Float},
                                                    {temp_name, ir::Type::Float},
                                                    {temp_name, ir::Type::Float},
-                                                   Operator::fadd));
+                                                   Operator::fadd));std::cout << "fadd-1732" << std::endl;
             std::cout << "term->token.type == TokenType::PLUS)" << std::endl;
         } else {
             instructions.push_back(new Instruction({root->v, ir::Type::Float},
@@ -1784,7 +1860,7 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, std::vector<Instruction *>
                 instructions.push_back(new Instruction({root->v, ir::Type::FloatLiteral},
                                                        {temp_name, ir::Type::Float},
                                                        {temp_name, ir::Type::Float},
-                                                       Operator::fadd));
+                                                       Operator::fadd));std::cout << "fadd-1787" << std::endl;
             } else {
                 instructions.push_back(new Instruction({root->v, ir::Type::FloatLiteral},
                                                        {temp_name, ir::Type::Float},
@@ -2397,17 +2473,6 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
                                                    std::cout<<"2037"<<std::endl;
             return;
         }
-//right
-           if (root->children.size() == 1) // 如果没有下标
-    {
-        std::cout << "analysisLVal-普通变量 " << std::endl;
-        if (is_left)
-        {
-            std::cout << "analysisLVal-普通变量-is_left " << std::endl;
-            root->t = var.operand.type;
-            root->v = var.operand.name;
-            return;
-        }
 
         // 右值处理
 
@@ -2473,10 +2538,7 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
             break;
         }
 
-
-
-
-    }
+    
     }
     else // 如果有下标
     {
@@ -2508,6 +2570,7 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
                                                    {temp_name, ir::Type::Int},
                                                    res_index,
                                                    Operator::add));
+            std::cout << "add-res_index:" <<res_index.name<< std::endl;
         }
 
         if (is_left)
@@ -2516,7 +2579,7 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
             instructions.push_back(new Instruction(var.operand,
                                                    res_index,
                                                    {root->v, root->t},
-                                                   Operator::store));
+                                                   Operator::store));std::cout << "store-2582:" << std::endl;
         }
         else
         {
