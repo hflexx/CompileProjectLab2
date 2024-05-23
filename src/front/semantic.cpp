@@ -309,7 +309,7 @@ void frontend::Analyzer::analysisConstDef(ConstDef *root, vector<Instruction *> 
             instructions.push_back(new Instruction({"0.0", ir::Type::FloatLiteral},
                                                    {},
                                                    {root->arr_name, ir::Type::Float},
-                                                   Operator::fdef));
+                                                   Operator::fdef));std::cout<<"fdef-312 "<<std::endl;
             res_type = ir::Type::FloatLiteral;
             break;
         default:
@@ -397,7 +397,7 @@ void frontend::Analyzer::analysisConstInitVal(ConstInitVal *root, vector<Instruc
                                                        {},
                                                        {root->v, ir::Type::Float},
                                                        Operator::fmov));
-                            std::cout<<"fmov-395"<<std::endl;
+                            std::cout<<"fmov-FloatLiteral395"<<std::endl;
                 break;
             default:
                 break;
@@ -528,7 +528,7 @@ void frontend::Analyzer::analysisVarDef(VarDef *root, vector<Instruction *> &ins
             instructions.push_back(new Instruction({"0.0", ir::Type::FloatLiteral},
                                                    {},
                                                    {root->arr_name, ir::Type::Float},
-                                                   Operator::fdef));
+                                                   Operator::fdef));std::cout<<"fdef-531 "<<std::endl;
             break;
         default:
             break;
@@ -687,7 +687,7 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, vector<Instruction *> &i
                         std::cout << "cvt_i2f-722" << std::endl;
                         exp->t = ir::Type::Float;
                     }
-
+                    std::cout << toString(exp->t) <<std::endl;
                     instructions.push_back(new Instruction({exp->v, exp->t},
                                                            {},
                                                            {root->v, ir::Type::Float},
@@ -953,13 +953,13 @@ void frontend::Analyzer::analysisStmt(Stmt *root, std::vector<Instruction *> &in
                 if (exp->t == Type::Int){
                     ir::Instruction* movInst = new ir::Instruction(ir::Operand(exp->v,ir::Type::Int),
                                                                    ir::Operand(),
-                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Int),ir::Operator::mov);
+                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Int),ir::Operator::mov);std::cout << "mov-956" << std::endl;
                     instructions.push_back(movInst);
                 }
                 else if (exp->t == Type::IntLiteral){
                     ir::Instruction* movInst = new ir::Instruction(ir::Operand(exp->v,ir::Type::IntLiteral),
                                                                    ir::Operand(),
-                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Int),ir::Operator::mov);
+                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Int),ir::Operator::mov);std::cout << "mov-962" << std::endl;
                     instructions.push_back(movInst);
                 }
                 else if (exp->t == Type::Float){
@@ -972,7 +972,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, std::vector<Instruction *> &in
                     int val = std::stof(exp->v);
                     ir::Instruction* movInst = new ir::Instruction(ir::Operand(std::to_string(val),ir::Type::IntLiteral),
                                                                    ir::Operand(),
-                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Int),ir::Operator::mov);
+                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Int),ir::Operator::mov);std::cout << "mov-975" << std::endl;
                     instructions.push_back(movInst);
                 }
             }else if(ident_ste.operand.type == Type::IntPtr){
@@ -990,7 +990,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, std::vector<Instruction *> &in
                 if (exp->t == Type::Int){
                     ir::Instruction* i2fInst = new ir::Instruction(ir::Operand(exp->v,ir::Type::Int),
                                                                    ir::Operand(),
-                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Float),ir::Operator::cvt_i2f);
+                                                                   ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Float),ir::Operator::cvt_i2f);std::cout << "cvt_i2f-993" << std::endl;
                     instructions.push_back(i2fInst);
                 }
                 else if (exp->t == Type::IntLiteral){
@@ -1004,12 +1004,15 @@ void frontend::Analyzer::analysisStmt(Stmt *root, std::vector<Instruction *> &in
                     ir::Instruction* movInst = new ir::Instruction(ir::Operand(exp->v,ir::Type::Float),
                                                                    ir::Operand(),
                                                                    ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Float),ir::Operator::fmov);
+                                                                   std::cout << "fmov-Float1006" <<std::endl;
                     instructions.push_back(movInst);
                 }
                 else if (exp->t == Type::FloatLiteral){
+
                     ir::Instruction* movInst = new ir::Instruction(ir::Operand(exp->v,ir::Type::FloatLiteral),
                                                                    ir::Operand(),
                                                                    ir::Operand(symbol_table.get_scoped_name(var_name),ir::Type::Float),ir::Operator::fmov);
+                                                                   std::cout << "fmov-Float1015" <<std::endl;
                     instructions.push_back(movInst);
                 }
             }
@@ -1287,7 +1290,7 @@ void frontend::Analyzer::analysisLOrExp(LOrExp *root, std::vector<Instruction *>
                                 ir::Operand("2",Type::IntLiteral),ir::Operator::_goto);
             Instruction * root_true_assign = new Instruction(ir::Operand("1",Type::IntLiteral),
                                                              ir::Operand(),
-                                                             ir::Operand(tmp_cal_name,ir::Type::Int),ir::Operator::mov);
+                                                             ir::Operand(tmp_cal_name,ir::Type::Int),ir::Operator::mov);std::cout << "mov-1290" << std::endl;
 
             // 假逻辑: 跳转PC+(1+2)
             Instruction * root_false_goto = new Instruction(ir::Operand(),
@@ -1398,7 +1401,7 @@ void frontend::Analyzer::analysisLAndExp(LAndExp *root, vector<Instruction *> &i
             // root为假时，tmp_cal_name为0
             Instruction * root_false_assign = new Instruction(ir::Operand("0",Type::IntLiteral),
                                 ir::Operand(),
-                                ir::Operand(tmp_cal_name,ir::Type::Int),ir::Operator::mov);
+                                ir::Operand(tmp_cal_name,ir::Type::Int),ir::Operator::mov);std::cout << "mov-1401" << std::endl;
             instructions.push_back(root_false_goto);
             instructions.insert(instructions.end(),true_logic_inst.begin(),true_logic_inst.end());
             instructions.push_back(root_false_assign);
@@ -1805,8 +1808,9 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, std::vector<Instruction *>
             instructions.push_back(new Instruction({mulexp->v, mulexp->t},
                                                    {},
                                                    {temp_name, ir::Type::Float},
-                                                   Operator::cvt_i2f));
+                                                   Operator::cvt_i2f));std::cout << "cvt_i2f-1811" << std::endl;
         } else if (mulexp->t != ir::Type::FloatLiteral) {
+            std::cout<<toString(mulexp->t)<<std::endl;
             instructions.push_back(new Instruction({mulexp->v, mulexp->t},
                                                    {},
                                                    {temp_name, ir::Type::Float},
@@ -1862,6 +1866,7 @@ void frontend::Analyzer::analysisAddExp(AddExp *root, std::vector<Instruction *>
                 mulexp->t = ir::Type::FloatLiteral;
                 mulexp->v = std::to_string(static_cast<float>(mulexp->t));
             }
+            std::cout<<toString(mulexp->t)<<std::endl;
 
             instructions.push_back(new Instruction({mulexp->v, mulexp->t},
                                                    {},
@@ -1920,7 +1925,7 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, std::vector<Instruction *>
     analysisUnaryExp(unaryexp, instructions);
 
 
-    std::cout<<"analysisMulExp-analysisUnaryExp->v:"<<unaryexp->v<<std::endl;
+    std::cout<<"analysisMulExp-analysisUnaryExp->v:"<<unaryexp->v<<" type:"<<toString(unaryexp->t)<<std::endl;
    if (unaryexp->t == ir::Type::Float){
         std::cout<<"analysisMulExp-unaryexp->t = ir::Type::Float;"<<std::endl;
         }
@@ -1941,13 +1946,27 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, std::vector<Instruction *>
 
     // 如果有多个UnaryExp
     for (size_t i = 2; i < root->children.size(); i += 2)
-    {
+    {std::cout<<"analysisMulExp-有多个UnaryExp:"<<std::endl;
 
         GET_CHILD_PTR(unaryexp, UnaryExp, i);
         unaryexp->v = get_temp_name();
         unaryexp->t = root->t;
         analysisUnaryExp(unaryexp, instructions);
-        std::cout<<"analysisMulExp-analysisUnaryExp-1697->v:"<<unaryexp->v<<std::endl;
+
+           if (root->t == ir::Type::Float){
+        std::cout<<"analysisMulExp1-root->t = ir::Type::Float;"<<std::endl;
+        }
+        else if (root->t == ir::Type::Int)
+        {
+        std::cout<<"analysisMulExp1-root->t = ir::Type::Int;"<<std::endl;
+        }else if (root->t == ir::Type::IntLiteral)
+        {
+        std::cout<<"analysisMulExp1-root->t = ir::Type::IntLiteral;"<<std::endl;
+        }else if (root->t == ir::Type::FloatLiteral )
+        {
+        std::cout<<"analysisMulExp1-root->t = ir::Type::FloatLiteral;"<<std::endl;
+        }
+        std::cout<<"analysisMulExp1-root-1697->v:"<<root->v<<std::endl;
         GET_CHILD_PTR(term, Term, i - 1);
 
         auto temp_name = get_temp_name();
@@ -1956,10 +1975,11 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, std::vector<Instruction *>
         case ir::Type::Int:
             if (unaryexp->t == ir::Type::Float || unaryexp->t == ir::Type::FloatLiteral)
             {
-                instructions.push_back(new Instruction({unaryexp->v, unaryexp->t},
-                                                       {},
-                                                       {temp_name, ir::Type::Int},
-                                                       Operator::cvt_f2i));std::cout<<"cvt_f2i-1633"<<std::endl;
+                // instructions.push_back(new Instruction({unaryexp->v, unaryexp->t},
+                //                                        {},
+                //                                        {temp_name, ir::Type::Int},
+                //                                        Operator::cvt_f2i));std::cout<<"cvt_f2i-1633"<<std::endl;
+                ;
             }
             else
             {
@@ -1967,7 +1987,7 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, std::vector<Instruction *>
                                                        {},
                                                        {temp_name, ir::Type::Int},
                                                        Operator::mov));
-                                                       std::cout<<"1607"<<std::endl;
+                                                       std::cout << "mov-1985" << std::endl;
             }
             switch (term->token.type)
             {
@@ -2070,7 +2090,7 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, std::vector<Instruction *>
                 root->t = ir::Type::FloatLiteral;
             }
             else
-            {
+            {std::cout<<toString(unaryexp->t)<<std::endl;
                 instructions.push_back(new Instruction({unaryexp->v, unaryexp->t},
                                                        {},
                                                        {temp_name, ir::Type::Float},
@@ -2127,6 +2147,7 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, std::vector<Instruction *>
                                                            {temp_name, ir::Type::Float},
                                                            Operator::cvt_i2f));std::cout<<"cvt_i2f-1881"<<std::endl;
                 }else{
+                    std::cout<<toString(unaryexp->t)<<std::endl;
                     instructions.push_back(new Instruction({unaryexp->v, unaryexp->t},
                                                            {},
                                                            {temp_name, ir::Type::Float},
@@ -2220,9 +2241,10 @@ void frontend::Analyzer::analysisUnaryExp(UnaryExp *root, std::vector<Instructio
             assert(0);
         }
         root->v = get_temp_name();
-        root->t = func->returnType;
-if (NODE_IS(FUNCRPARAMS, 2)) // 如果有参数
-        {  
+        root->t = func->returnType;//返回值类型?
+        std::cout<<"analysisUnaryExp-函数调用v:"<<root->v<<"t:"<<toString(root->t)<<std::endl;
+        if (NODE_IS(FUNCRPARAMS, 2)) // 如果有参数
+        {  std::cout<<"analysisUnaryExp-函数调用-有参数 "<<std::endl;
             GET_CHILD_PTR(funcrparams, FuncRParams, 2);
             std::vector<Operand> params;
             for (size_t i = 0; i < func->ParameterList.size(); i++)
@@ -2441,6 +2463,7 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
     auto var = symbol_table.get_ste(ident->token.value);std::cout<<"get_ste-2441"<<std::endl;
 
     std::cout << "LVal: " << toString(var.operand.type) << " "<< var.operand.name << std::endl;
+    std::cout << "analysisLVal:root->t:" << toString(root->t) << " v:"<< root->v << std::endl;
     // 普通变量 (可能的类型: Int, IntLiteral, Float, FloatLiteral, IntPtr, FloatPtr)
     std::cout<<"analysisLVal-root->children.size()"<<root->children.size()<<std::endl;
     if (root->children.size() == 1) // 如果没有下标
@@ -2484,7 +2507,7 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
                                                    {},
                                                    {var.operand.name, var.operand.type},
                                                    Operator::mov));
-                                                   std::cout<<"2037"<<std::endl;
+                                                   std::cout<<"mov-2037"<<std::endl;
             return;
         }
 
@@ -2511,21 +2534,22 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
             root->t = var.operand.type;
             root->v = var.operand.name;
             break;
-        case ir::Type::Float:
+        case ir::Type::Float://考虑类型提升
             {
                 std::string temp_name = get_temp_name();
                 if (root->t == ir::Type::Int)
                 {
                     std::string temp_name_float = get_temp_name();
-                    instructions.push_back(new Instruction({var.operand.name, var.operand.type}, {}, {temp_name_float, ir::Type::Float}, Operator::fmov));
+                    std::cout << toString(var.operand.type) <<std::endl;  
+                    instructions.push_back(new Instruction({var.operand.name, var.operand.type}, {}, {temp_name_float, ir::Type::Float}, Operator::fmov));std::cout << "fmov-2538" <<std::endl;
                     instructions.push_back(new Instruction({temp_name_float, ir::Type::Float}, {}, {temp_name, ir::Type::Int}, Operator::cvt_f2i));
                     root->v = temp_name;
                     root->t = ir::Type::Int;
                     flag=2;
                 }
                 else
-                {
-                    instructions.push_back(new Instruction({var.operand.name, var.operand.type}, {}, {temp_name, ir::Type::Float}, Operator::fmov));
+                {std::cout << toString(var.operand.type) <<std::endl;  
+                    instructions.push_back(new Instruction({var.operand.name, var.operand.type}, {}, {temp_name, ir::Type::Float}, Operator::fmov));std::cout << "fmov-2546" <<std::endl;
                     root->v = temp_name;
                     root->t = ir::Type::Float;
                     flag=1;
@@ -2533,18 +2557,30 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
             }
             break;
         case ir::Type::Int:
-            {
+            {   if (root->t == ir::Type::FloatLiteral||root->t == ir::Type::Float){
                 std::string temp_name = get_temp_name();
-                instructions.push_back(new Instruction({var.operand.name, var.operand.type}, {}, {temp_name, ir::Type::Int}, Operator::mov));
+                                    std::string temp_name_float = get_temp_name();
+                       std::cout << toString(var.operand.type) <<std::endl;             
+                    instructions.push_back(new Instruction({var.operand.name, var.operand.type}, {}, {temp_name_float, ir::Type::Int}, Operator::mov));std::cout << "mov-2557" <<std::endl;
+                    instructions.push_back(new Instruction({temp_name_float, ir::Type::Int}, {}, {temp_name, ir::Type::Float}, Operator::cvt_i2f));std::cout << "cvt_i2f-2565" <<std::endl;
+                    root->v = temp_name;
+                    root->t = ir::Type::Float;
+
+            }else{
+                std::string temp_name = get_temp_name();
+                instructions.push_back(new Instruction({var.operand.name, var.operand.type}, {}, {temp_name, ir::Type::Int}, Operator::mov));std::cout<<"mov-2554"<<std::endl;
                 root->v = temp_name;
                 root->t = ir::Type::Int;
                 flag=1;
+            }
+
+                
             }
             break;
         default:
             {
                 std::string temp_name = get_temp_name();
-                instructions.push_back(new Instruction({var.operand.name, var.operand.type}, {}, {temp_name, var.operand.type}, Operator::mov));
+                instructions.push_back(new Instruction({var.operand.name, var.operand.type}, {}, {temp_name, var.operand.type}, Operator::mov));std::cout<<"mov-2563"<<std::endl;
                 root->v = temp_name;
                 root->t = var.operand.type;
                 flag=1;
@@ -2730,7 +2766,7 @@ void frontend::Analyzer::analysisNumber(Number *root, vector<Instruction *> &ins
             root->v = term->token.value;
         }
     
-        if(root->t == Type::FloatLiteral){
+        if(root->t == Type::FloatLiteral||root->t == Type::Float){
              std::cout<<"analysisNumber-root->t = Type::FloatLiteral"<<std::endl;
 
             // int val1=stoi(root->v);

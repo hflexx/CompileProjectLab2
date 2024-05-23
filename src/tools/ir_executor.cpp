@@ -455,7 +455,15 @@ bool ir::Executor::exec_ir(size_t n) {
                     *pvalue = find_src_operand(inst->op1);
                 }
                 else {
-                    assert(0 && "in Operator::fdef[fmov], op1 has a wrong type");
+                  //  assert(0 && "in Operator::fdef[fmov], op1 has a wrong type");
+
+
+                             if(inst->op1.type==Type::Int) assert(0&& "fdef[fmov],inst->op1.type==Type::Int");
+                            if(inst->op1.type==Type::IntLiteral) assert(0&& "fdef[fmov],inst->op1.type==Type::IntLiteral");
+                            if(inst->op1.type==Type::IntPtr) assert(0&& "fdef[fmov],inst->op1.type==Type::IntPtr");
+                            if(inst->op1.type==Type::Float) assert(0&& "fdef[fmov],inst->op1.type==Type::Float");
+                            if(inst->op1.type==Type::FloatLiteral) assert(0&& "fdef[fmov],inst->op1.type==Type::FloatLiteral");
+                            if(inst->op1.type==Type::FloatPtr) assert(0&& "fdef[fmov],inst->op1.type==Type::FloatPtr");
                 }
 #if (DEBUG_EXEC_DETAIL)
                     std::cout << "\tdes operand(" << toString(inst->des.type) << " " << inst->des.name  << "), value = " << pvalue->_val.ival << std::endl;
@@ -468,7 +476,13 @@ bool ir::Executor::exec_ir(size_t n) {
                     pvalue->_val.fval = (float)find_src_operand(inst->op1)._val.ival;
                 }
                 else {
-                    assert(0 && "in Operator::cvt_i2f, op1 has a wrong type");
+                    //assert(0 && "in Operator::cvt_i2f, op1 has a wrong type");
+                        if(inst->op1.type==Type::Int) assert(0&& "cvt_i2f,inst->op1.type==Type::Int");
+                            if(inst->op1.type==Type::IntLiteral) assert(0&& "cvt_i2f,inst->op1.type==Type::IntLiteral");
+                            if(inst->op1.type==Type::IntPtr) assert(0&& "cvt_i2f,inst->op1.type==Type::IntPtr");
+                            if(inst->op1.type==Type::Float) assert(0&& "cvt_i2f,inst->op1.type==Type::Float");
+                            if(inst->op1.type==Type::FloatLiteral) assert(0&& "cvt_i2f,inst->op1.type==Type::FloatLiteral");
+                            if(inst->op1.type==Type::FloatPtr) assert(0&& "cvt_i2f,inst->op1.type==Type::FloatPtr");
                 }
 #if (DEBUG_EXEC_DETAIL)
                     std::cout << "\tdes operand(" << toString(inst->des.type) << " " << inst->des.name  << "), value = " << pvalue->_val.fval << std::endl;

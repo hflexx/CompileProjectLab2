@@ -81,17 +81,19 @@ int main() {
   int i = 1, p = 0;
   float arr[10] = {1., 2};
   int len = getfarray(arr);
+  while (i < MAX) {
     float input = getfloat();
     float area = PI * input * input, area_trunc = circle_area(input);
     arr[p] = arr[p] + input;
 
     putfloat(area);
-    putch(32);
+    putch(32);//空格
     putint(area_trunc); // f->i implicit conversion
-    putch(10);
+    putch(10);//换行
 
     i = i * - -10;
     p = p + 1;
+  }
   putfarray(len, arr);
   return 0;
 }

@@ -1,52 +1,151 @@
-import os, platform, subprocess, shutil, sys
-import difflib
+# import os, platform, subprocess, shutil, sys
+# import difflib
 
-def print_different_lines(file1, file2):
-    lines1 = open(file1).readlines()
-    lines2 = open(file2).readlines()
-    differ = difflib.Differ()
-    diff = list(differ.compare(lines1, lines2))
-    for line in diff:
-        if line.startswith('- ') or line.startswith('+ '):
-            print(line)
+# def print_different_lines(file1, file2):
+#     lines1 = open(file1).readlines()
+#     lines2 = open(file2).readlines()
+#     differ = difflib.Differ()
+#     diff = list(differ.compare(lines1, lines2))
+#     for line in diff:
+#         if line.startswith('- ') or line.startswith('+ '):
+#             print(line)
+
+# def score_compiler(arg1):
+#     record = {}
+
+#     is_windows = platform.system() == "Windows"
+    
+#     output_base = "./output/"
+#     ref_base = "./ref/" + arg1 + "/"
+
+#     score = 0
+#     total = 1  # 只评分一个文件
+
+#     if arg1 == "s2":
+#         for i in ["function"]:
+#             output_dir = output_base + i + '/'
+#             ref_dir = ref_base + i + '/'
+#             if os.path.exists(output_dir):
+#                 files = [f for f in os.listdir(output_dir) if f == "95_float.out"]
+#                 for file in files:
+#                     cmd = ' '.join(["diff", ref_dir + file, output_dir + file, '-wB'])
+#                     if is_windows:
+#                         cmd = cmd.replace('/', '\\')
+#                     cp = subprocess.run(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+#                     if cp.returncode != 0:
+#                         record[file] = {"retval3": cp.returncode, "err_detail": cp.stderr}
+#                         print("Expected output:\n", open(ref_dir + file).read())
+#                         print("Actual output:\n", open(output_dir + file).read())
+#                         print("Differences:")
+#                         print_different_lines(ref_dir + file, output_dir + file)
+#                     else:
+#                         score += 1
+#                         record[file] = {"retval3": 0}
+#                     print(file, record[file])
+#         print("score:", score, "/", total)
+#     else:
+#         print("Unsupported step:", arg1)
+
+#     return int(score / total * 100)
+
+# if __name__ == "__main__":
+#     assert(len(sys.argv) == 2)
+#     score_compiler(sys.argv[1])
+import os, platform, subprocess, shutil, sys
 
 def score_compiler(arg1):
     record = {}
 
     is_windows = platform.system() == "Windows"
-    
+
+    assert(len(sys.argv) == 2)
+
+    oftype = ""
+    step = "-" + arg1
+    if step == "-s0":
+        oftype = "tk"
+    elif step == "-s1":
+        oftype = "json"
+    elif step == "-s2":
+        oftype = "out"
+    else:
+        print("illegal input")
+        exit()
+
     output_base = "./output/"
     ref_base = "./ref/" + arg1 + "/"
 
     score = 0
-    total = 1  # 只评分一个文件
+    total = 58      # FIXME 改成读取测试用例数而不是写死
 
-    if arg1 == "s2":
-        for i in ["function"]:
+    if step == "-s0":
+        for i in ["basic", "function"]:
             output_dir = output_base + i + '/'
             ref_dir = ref_base + i + '/'
             if os.path.exists(output_dir):
-                files = [f for f in os.listdir(output_dir) if f == "95_float.out"]
+                files = os.listdir(output_dir)
                 for file in files:
-                    cmd = ' '.join(["diff", ref_dir + file, output_dir + file, '-wB'])
+                    if not (file[-3:] == ".tk"):
+                        continue
+                    cmd = ' '.join(["diff", ref_dir + file, output_dir + file, '-w'])
                     if is_windows:
-                        cmd = cmd.replace('/', '\\')
-                    cp = subprocess.run(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+                        cmd = cmd.replace('/','\\')
+                    # print(cmd)
+                    cp = subprocess.run(cmd, shell=True, stderr=subprocess.DEVNULL, stdout=subprocess.PIPE)
                     if cp.returncode != 0:
-                        record[file] = {"retval3": cp.returncode, "err_detail": cp.stderr}
-                        print("Expected output:\n", open(ref_dir + file).read())
-                        print("Actual output:\n", open(output_dir + file).read())
-                        print("Differences:")
-                        print_different_lines(ref_dir + file, output_dir + file)
+                        record[file] = {"retval": cp.returncode, "err_detail": "diff test failed"}
                     else:
                         score += 1
-                        record[file] = {"retval3": 0}
+                        record[file] = {"retval": 0}
                     print(file, record[file])
-        print("score:", score, "/", total)
+        print("score:",score,"/",total)
+    elif step == "-s1":
+        for i in ["basic", "function"]:
+            output_dir = output_base + i + '/'
+            ref_dir = ref_base + i + '/'
+            if os.path.exists(output_dir):
+                files = os.listdir(output_dir)
+                for file in files:
+                    if not (file[-5:] == ".json"):
+                        continue
+                    cmd = ' '.join(["diff", ref_dir + file, output_dir + file, '-w'])
+                    if is_windows:
+                        cmd = cmd.replace('/','\\')
+                    cp = subprocess.run(cmd, shell=True, stderr=subprocess.DEVNULL, stdout=subprocess.PIPE)
+                    if cp.returncode != 0:
+                        record[file] = {"retval": cp.returncode, "err_detail": cp.stdout}
+                    else:
+                        score += 1
+                        record[file] = {"retval": 0}
+                    print(file, record[file])
+        print("score:",score,"/",total)
+    elif step == "-s2":
+        for i in ["basic", "function"]:
+            output_dir = output_base + i + '/'
+            ref_dir = ref_base + i + '/'
+            if os.path.exists(output_dir):
+                files = os.listdir(output_dir)
+                for file in files:
+                    if not (file[-4:] == ".out"):
+                        continue
+                    cmd = ' '.join(["diff", ref_dir + file, output_dir + file, '-wB'])
+                    if is_windows:
+                        cmd = cmd.replace('/','\\')
+                    # print(cmd)
+                    cp = subprocess.run(cmd, shell=True, stderr=subprocess.PIPE, stdout=subprocess.DEVNULL)
+                    if cp.returncode != 0:
+                        record[file] = {"retval": cp.returncode, "err_detail": cp.stderr}
+                    else:
+                        score += 1
+                        record[file] = {"retval": 0}
+                    print(file, record[file])
+        print("score:",score,"/",total)
     else:
-        print("Unsupported step:", arg1)
+        print("TODO")
+        # exit()
+        
+    return int(score/total * 100)
 
-    return int(score / total * 100)
 
 if __name__ == "__main__":
     assert(len(sys.argv) == 2)
