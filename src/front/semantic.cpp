@@ -2566,8 +2566,7 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
                 break;
 
             GET_CHILD_PTR(exp, Exp, index);
-        if (root->t == ir::Type::Float||root->t == ir::Type::FloatLiteral)
-                 exp->t=ir::Type::FloatLiteral;
+
         if (exp->t == ir::Type::Int)
         {
         std::cout<<"analysisLVal-exp->t = ir::Type::Int;"<<std::endl;
@@ -2582,8 +2581,8 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
         std::cout<<"analysisLVal-exp->t = ir::Type::Float;"<<std::endl;
         }
 
-
-
+        // if (root->t == ir::Type::Float||root->t == ir::Type::FloatLiteral)
+        //          exp->t=ir::Type::FloatLiteral;
             analysisExp(exp, instructions);
         if (exp->t == ir::Type::Int)
         {
@@ -2610,13 +2609,15 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
                                                res_index,
                                                Operator::def));std::cout<<"def-2239 "<<std::endl;
         for (size_t i = 0; i < load_index.size(); i++)
-        {
+        {std::cout<<"load_index["<<i<<"]:"<<load_index[i].name<<" "<<toString(load_index[i].type)<<std::endl;
+
             int mul_dim = std::accumulate(var.dimension.begin() + i + 1, var.dimension.end(), 1, std::multiplies<int>());
             auto temp_name = get_temp_name();
             instructions.push_back(new Instruction(load_index[i],
                                                    {std::to_string(mul_dim), ir::Type::IntLiteral},
                                                    {temp_name, ir::Type::Int},
-                                                   Operator::mul));std::cout<<"mul-2619 "<<std::endl;
+                                                   Operator::mul));
+                                                   std::cout<<"mul-2619 "<<std::endl;
             instructions.push_back(new Instruction(res_index,
                                                    {temp_name, ir::Type::Int},
                                                    res_index,
@@ -2628,33 +2629,35 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
         {
             std::cout << "LValis_left-有下标: " << toString(var.operand.type) << " "<< var.operand.name << std::endl;
 
-                    if (root->t == ir::Type::Float||root->t == ir::Type::FloatLiteral)
-                            var.operand.type=ir::Type::FloatLiteral;
+                    // if (root->t == ir::Type::Float||root->t == ir::Type::FloatLiteral)
+                    //         var.operand.type=ir::Type::FloatLiteral;
 
 
     if (root->t == ir::Type::Float){
-        std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::Float;"<<std::endl;
+        std::cout<<"LVal-is_leftPrimaryExp-root->t = ir::Type::Float;"<<std::endl;
         }
         else if (root->t == ir::Type::Int)
         {
-        std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::Int;"<<std::endl;
+        std::cout<<"LVal-is_leftPrimaryExp-root->t = ir::Type::Int;"<<std::endl;
         }else if (root->t == ir::Type::IntLiteral)
         {
-        std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::IntLiteral;"<<std::endl;
+        std::cout<<"LVa-lis_leftPrimaryExp-root->t = ir::Type::IntLiteral;"<<std::endl;
         }else if (root->t == ir::Type::FloatLiteral )
         {
-        std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::FloatLiteral;"<<std::endl;
+        std::cout<<"LVal-is_leftPrimaryExp-root->t = ir::Type::FloatLiteral;"<<std::endl;
         }else if (root->t == ir::Type::IntPtr)
         {
-        std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::IntPtr;"<<std::endl;
+        std::cout<<"LVal-is_leftPrimaryExp-root->t = ir::Type::IntPtr;"<<std::endl;
         }else if (root->t == ir::Type::FloatPtr )
         {
-        std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::FloatPtr;"<<std::endl;
+        std::cout<<"LVal-is_leftPrimaryExp-root->t = ir::Type::FloatPtr;"<<std::endl;
         }else   std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::null;"<<std::endl;
         if(var.operand.type== ir::Type::FloatPtr) {
-            root->t=ir::Type::FloatLiteral;
+            // var.operand.type== ir::Type::Float;
             root->v=std::to_string((float)(stoi(root->v)));
         }
+        // if(root->v= ir::Type::FloatLiteral && var.operand.type== ir::Type::)
+        
             // store:存数指令，op1:数组名，op2:下标，des:存放变量
             instructions.push_back(new Instruction(var.operand,
                                                    res_index,

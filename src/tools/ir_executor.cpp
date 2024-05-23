@@ -355,7 +355,7 @@ bool ir::Executor::exec_ir(size_t n) {
                     find_src_operand(inst->op1)._val.fptr[off] = find_src_operand(inst->des)._val.fval;
                 }
                 else {
-                    if(!IS_INT_OPERAND(inst->des))assert(0 && "!IS_INT_OPERAND(inst->des)");
+                
                     // if(inst->op1.type != Type::IntPtr)assert(0 && "inst->op1.type != Type::IntPtr");
                             // if(inst->op1.type==Type::Int) assert(0&& "inst->op1.type==Type::Int");
                             // if(inst->op1.type==Type::IntLiteral) assert(0&& "inst->op1.type==Type::IntLiteral");
@@ -365,14 +365,15 @@ bool ir::Executor::exec_ir(size_t n) {
                             // if(inst->op1.type==Type::FloatPtr) assert(0&& "inst->op1.type==Type::FloatPtr");
 
                     // if(!IS_FLOAT_OPERAND(inst->des) ，inst->op1.type = Type::IntPtr)assert(0 && "!IS_FLOAT_OPERAND(inst->des)");
+                     if(inst->des.type==Type::FloatLiteral&&inst->op1.type != Type::FloatPtr)assert(0 && "inst->op1.type != Type::FloatPtr");
                             if(inst->des.type==Type::Int) assert(0&& "inst->des.type==Type::Int");
                             if(inst->des.type==Type::IntLiteral) assert(0&& "inst->des.type==Type::IntLiteral");
                             if(inst->des.type==Type::IntPtr) assert(0&& "inst->des.type==Type::IntPtr");
                             if(inst->des.type==Type::Float) assert(0&& "inst->des.type==Type::Float");
                             if(inst->des.type==Type::FloatLiteral) assert(0&& "inst->des.type==Type::FloatLiteral");
                             if(inst->des.type==Type::FloatPtr) assert(0&& "inst->des.type==Type::FloatPtr");
-
-                    if(inst->op1.type != Type::FloatPtr)assert(0 && "inst->op1.type != Type::FloatPtr");
+                if(!IS_INT_OPERAND(inst->des)&&inst->op1.type != Type::IntPtr)assert(0 && "!IS_INT_OPERAND(inst->des)");
+                   
                 }
             } break;
             case Operator::load: {
