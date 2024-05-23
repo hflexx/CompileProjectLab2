@@ -945,6 +945,8 @@ void frontend::Analyzer::analysisStmt(Stmt *root, std::vector<Instruction *> &in
         if (ident_ste.operand.type == ir::Type::Float)std::cout<<"analysisStmt-ident_ste.operand.type:Float"<<std::endl;
         if (ident_ste.operand.type == ir::Type::IntPtr)std::cout<<"analysisStmt-ident_ste.operand.typeIntPtr"<<std::endl;
         if (ident_ste.operand.type == ir::Type::FloatPtr)std::cout<<"analysisStmt-ident_ste.operand.type:FloatPtr"<<std::endl;
+        
+        std::cout<<"analysisStmt-lval->children.size() "<<lval->children.size() <<std::endl;
        if (lval->children.size() == 1){
             // Float/Int/FloatLiteral/IntLiteral -> Int
             if (ident_ste.operand.type == Type::Int){
@@ -1013,6 +1015,17 @@ void frontend::Analyzer::analysisStmt(Stmt *root, std::vector<Instruction *> &in
             }
             else
                 assert(0 && "Error Type");
+        }else if (lval->children.size() == 4){//先只考虑一维数组转换
+            if(ident_ste.operand.type == Type::IntPtr){
+                std::cout << "analysisStmt-exp类型转换成IntPtr " <<std::endl;  
+                exp->t == Type::IntLiteral;
+
+            }else if(ident_ste.operand.type == Type::FloatPtr){
+                std::cout << "analysisStmt-exp类型转换成FloatPtr " <<std::endl;  
+                exp->t == Type::FloatLiteral;
+
+            }
+
         }
 
         
@@ -2429,6 +2442,7 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
 
     std::cout << "LVal: " << toString(var.operand.type) << " "<< var.operand.name << std::endl;
     // 普通变量 (可能的类型: Int, IntLiteral, Float, FloatLiteral, IntPtr, FloatPtr)
+    std::cout<<"analysisLVal-root->children.size()"<<root->children.size()<<std::endl;
     if (root->children.size() == 1) // 如果没有下标
     {std::cout<<"analysisLVal-普通变量 "<<std::endl;
         if (is_left)
@@ -2541,7 +2555,10 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
     
     }
     else // 如果有下标
-    {
+    {std::cout<<"analysisLVal-有下标 "<<std::endl;
+     
+     
+     
         std::vector<Operand> load_index;
         for (size_t index = 2; index < root->children.size(); index += 3)
         {
@@ -2549,11 +2566,45 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
                 break;
 
             GET_CHILD_PTR(exp, Exp, index);
+        if (root->t == ir::Type::Float||root->t == ir::Type::FloatLiteral)
+                 exp->t=ir::Type::FloatLiteral;
+        if (exp->t == ir::Type::Int)
+        {
+        std::cout<<"analysisLVal-exp->t = ir::Type::Int;"<<std::endl;
+        }else if (exp->t == ir::Type::IntLiteral)
+        {
+        std::cout<<"analysisLVal-exp->t = ir::Type::IntLiteral;"<<std::endl;
+        }else if (exp->t == ir::Type::FloatLiteral )
+        {
+        std::cout<<"analysisLVal-exp->t = ir::Type::FloatLiteral;"<<std::endl;
+        }else if (exp->t == ir::Type::Float )
+        {
+        std::cout<<"analysisLVal-exp->t = ir::Type::Float;"<<std::endl;
+        }
+
+
+
             analysisExp(exp, instructions);
+                    if (exp->t == ir::Type::Int)
+        {
+        std::cout<<"analysisLVal1-exp->t = ir::Type::Int;"<<std::endl;
+        }else if (exp->t == ir::Type::IntLiteral)
+        {
+        std::cout<<"analysisLVal1-exp->t = ir::Type::IntLiteral;"<<std::endl;
+        }else if (exp->t == ir::Type::FloatLiteral )
+        {
+        std::cout<<"analysisLVal1-exp->t = ir::Type::FloatLiteral;"<<std::endl;
+        }else if (exp->t == ir::Type::Float )
+        {
+        std::cout<<"analysisLVal1-exp->t = ir::Type::Float;"<<std::endl;
+        }
+
+         std::cout<<"analysisLVal1-exp->v"<<exp->v<<std::endl;
             load_index.push_back({exp->v, exp->t});
         }
 
         auto res_index = Operand{get_temp_name(), ir::Type::Int};
+
         instructions.push_back(new Instruction({"0", ir::Type::IntLiteral},
                                                {},
                                                res_index,
