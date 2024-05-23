@@ -934,7 +934,7 @@ void frontend::Analyzer::analysisStmt(Stmt *root, std::vector<Instruction *> &in
         GET_CHILD_PTR(lval, LVal, 0);
          string var_name = (dynamic_cast<Term*>(lval->children[0]))->token.value;
     // auto ident_ste = symbol_table.get_ste(ident->token.value);
-        STE ident_ste = symbol_table.get_ste(var_name);
+        STE ident_ste = symbol_table.get_ste(var_name);std::cout<<"get_ste-937"<<std::endl;
         std::cout << "analysisStmt-ident_ste.operand.type  " << toString(ident_ste.operand.type ) << " "<< ident_ste.operand.name << std::endl;
         
 //---------------------------要进行类型转换
@@ -2438,7 +2438,7 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
 {
     std::cout<<"analysisLVal "<<std::endl;
     GET_CHILD_PTR(ident, Term, 0);
-    auto var = symbol_table.get_ste(ident->token.value);
+    auto var = symbol_table.get_ste(ident->token.value);std::cout<<"get_ste-2441"<<std::endl;
 
     std::cout << "LVal: " << toString(var.operand.type) << " "<< var.operand.name << std::endl;
     // 普通变量 (可能的类型: Int, IntLiteral, Float, FloatLiteral, IntPtr, FloatPtr)
@@ -2652,10 +2652,10 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
         {
         std::cout<<"LVal-is_leftPrimaryExp-root->t = ir::Type::FloatPtr;"<<std::endl;
         }else   std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::null;"<<std::endl;
-        if(var.operand.type== ir::Type::FloatPtr) {
-            // var.operand.type== ir::Type::Float;
-            root->v=std::to_string((float)(stoi(root->v)));
-        }
+        // if(var.operand.type== ir::Type::FloatPtr) {
+        //     // var.operand.type== ir::Type::Float;
+        //     root->v=std::to_string((float)(stoi(root->v)));
+        // }
         // if(root->v= ir::Type::FloatLiteral && var.operand.type== ir::Type::)
         
             // store:存数指令，op1:数组名，op2:下标，des:存放变量
