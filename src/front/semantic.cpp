@@ -732,7 +732,7 @@ void frontend::Analyzer::analysisInitVal(InitVal *root, vector<Instruction *> &i
 
                 std::cout << "analysisInitVal773:" << std::endl;
                 analysisInitVal(initval, instructions, curr_type);
-
+                
                 instructions.push_back(new Instruction({root->v, root->t},
                                                        {std::to_string(insert_index), ir::Type::IntLiteral},
                                                        {initval->v, initval->t},
@@ -1975,7 +1975,7 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, std::vector<Instruction *>
                 instructions.push_back(new Instruction({root->v, ir::Type::Int},
                                                        {temp_name, ir::Type::Int},
                                                        {temp_name, ir::Type::Int},
-                                                       Operator::mul));
+                                                       Operator::mul));std::cout<<"mul-1978"<<std::endl;
                 break;
             case TokenType::DIV:
                 instructions.push_back(new Instruction({root->v, ir::Type::Int},
@@ -2038,7 +2038,7 @@ void frontend::Analyzer::analysisMulExp(MulExp *root, std::vector<Instruction *>
                     instructions.push_back(new Instruction({root->v, ir::Type::IntLiteral},
                                                            {temp_name, ir::Type::Int},
                                                            {temp_name, ir::Type::Int},
-                                                           Operator::mul));
+                                                           Operator::mul));std::cout<<"mul-2041 "<<std::endl;
                     break;
                 case TokenType::DIV:
                     instructions.push_back(new Instruction({root->v, ir::Type::IntLiteral},
@@ -2393,7 +2393,7 @@ void frontend::Analyzer::analysisFuncRParams(FuncRParams *root, vector<Operand> 
 void frontend::Analyzer::analysisPrimaryExp(PrimaryExp *root, std::vector<Instruction *> &instructions)
 {
     std::cout<<"analysisPrimaryExp "<<std::endl;
-               if (root->t == ir::Type::Float){
+      if (root->t == ir::Type::Float){
         std::cout<<"PrimaryExp-root->t = ir::Type::Float;"<<std::endl;
         }
         else if (root->t == ir::Type::Int)
@@ -2585,7 +2585,7 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
 
 
             analysisExp(exp, instructions);
-                    if (exp->t == ir::Type::Int)
+        if (exp->t == ir::Type::Int)
         {
         std::cout<<"analysisLVal1-exp->t = ir::Type::Int;"<<std::endl;
         }else if (exp->t == ir::Type::IntLiteral)
@@ -2616,7 +2616,7 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
             instructions.push_back(new Instruction(load_index[i],
                                                    {std::to_string(mul_dim), ir::Type::IntLiteral},
                                                    {temp_name, ir::Type::Int},
-                                                   Operator::mul));
+                                                   Operator::mul));std::cout<<"mul-2619 "<<std::endl;
             instructions.push_back(new Instruction(res_index,
                                                    {temp_name, ir::Type::Int},
                                                    res_index,
@@ -2626,6 +2626,35 @@ void frontend::Analyzer::analysisLVal(LVal *root, vector<Instruction *> &instruc
 
         if (is_left)
         {
+            std::cout << "LValis_left-有下标: " << toString(var.operand.type) << " "<< var.operand.name << std::endl;
+
+                    if (root->t == ir::Type::Float||root->t == ir::Type::FloatLiteral)
+                            var.operand.type=ir::Type::FloatLiteral;
+
+
+    if (root->t == ir::Type::Float){
+        std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::Float;"<<std::endl;
+        }
+        else if (root->t == ir::Type::Int)
+        {
+        std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::Int;"<<std::endl;
+        }else if (root->t == ir::Type::IntLiteral)
+        {
+        std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::IntLiteral;"<<std::endl;
+        }else if (root->t == ir::Type::FloatLiteral )
+        {
+        std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::FloatLiteral;"<<std::endl;
+        }else if (root->t == ir::Type::IntPtr)
+        {
+        std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::IntPtr;"<<std::endl;
+        }else if (root->t == ir::Type::FloatPtr )
+        {
+        std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::FloatPtr;"<<std::endl;
+        }else   std::cout<<"LValis_leftPrimaryExp-root->t = ir::Type::null;"<<std::endl;
+        if(var.operand.type== ir::Type::FloatPtr) {
+            root->t=ir::Type::FloatLiteral;
+            root->v=std::to_string((float)(stoi(root->v)));
+        }
             // store:存数指令，op1:数组名，op2:下标，des:存放变量
             instructions.push_back(new Instruction(var.operand,
                                                    res_index,

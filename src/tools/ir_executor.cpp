@@ -364,7 +364,7 @@ bool ir::Executor::exec_ir(size_t n) {
                             // if(inst->op1.type==Type::FloatLiteral) assert(0&& "inst->op1.type==Type::FloatLiteral");
                             // if(inst->op1.type==Type::FloatPtr) assert(0&& "inst->op1.type==Type::FloatPtr");
 
-                    // if(!IS_FLOAT_OPERAND(inst->des) )assert(0 && "!IS_FLOAT_OPERAND(inst->des)");
+                    // if(!IS_FLOAT_OPERAND(inst->des) ，inst->op1.type = Type::IntPtr)assert(0 && "!IS_FLOAT_OPERAND(inst->des)");
                             if(inst->des.type==Type::Int) assert(0&& "inst->des.type==Type::Int");
                             if(inst->des.type==Type::IntLiteral) assert(0&& "inst->des.type==Type::IntLiteral");
                             if(inst->des.type==Type::IntPtr) assert(0&& "inst->des.type==Type::IntPtr");
@@ -561,8 +561,16 @@ bool ir::Executor::exec_ir(size_t n) {
                         std::cout << "Operator::sub";
                         assert(0 && "type of sub is not right type");
                     case Operator::mul:
+                    
                         std::cout << "Operator::mul";
-                        assert(0 && "type of mul is not right type");
+
+                          if(inst->op1.type==Type::Int) assert(0&& "type of mul is not right type,inst->op1.type==Type::Int");
+                            if(inst->op1.type==Type::IntLiteral) assert(0&& "type of mul is not right type,inst->op1.type==Type::IntLiteral");
+                            if(inst->op1.type==Type::IntPtr) assert(0&& "type of mul is not right type,inst->op1.type==Type::IntPtr");
+                            if(inst->op1.type==Type::Float) assert(0&& "type of mul is not right type,inst->op1.type==Type::Float");
+                            if(inst->op1.type==Type::FloatLiteral) assert(0&& "type of mul is not right type,inst->op1.type==Type::FloatLiteral");
+                            if(inst->op1.type==Type::FloatPtr) assert(0&& "type of mul is not right type,inst->op1.type==Type::FloatPtr");
+                        // assert(0 && "type of mul is not right type");
                     case Operator::div:
                         std::cout << "Operator::div";
                         assert(0 && "type of div is not right type");
